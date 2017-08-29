@@ -87,24 +87,25 @@ Why not just omit the --split-files and have one file, to begin with? I Also hav
 That will leave us with the files:
 Rhodo_Hiseq_read1.fastq  Rhodo_Hiseq_read2.fastq
 
-# 3. spades
-Spades is a genome assembler. He takes the raw fastq data and generates assembled .fasta files.
+# 3. Option A: spades
+Spades is a russian genome assembler writen in Python. He takes the raw fastq data and generates assembled .fasta files.
 [Official Webpage](http://cab.spbu.ru/software/spades/)
 
 > SPAdes (St. Petersburg genome assembler)[1] is a genome assembly algorithm which was designed for single cell and multi-cells bacterial data sets. However, it might not be suitable for large genomes projects.  (Wikipedia)
 
 Its made for facterial data sets. Not indicated for large genomes.
 
-## Instalation
+## 3.1 Instalation
 ```sh
     $ sudo apt-get install spades
 ```
 
-# Using it
+## 3.2 Using it
 
 ```sh
     $ spades.py -t 8 --pe1-1 Rhodo_Hiseq_read1.fastq --pe1-2 Rhodo_Hiseq_read2.fastq -o SpadesOut
 ```
+
 This will create the directory:
 ```sh
     SpadesOut/
@@ -126,4 +127,28 @@ This will create the directory:
     ├── misc
     └── tmp
     (17 directories)
+```
+
+Created around 3100 contigs
+
+# 4. Option B: abyss
+> Usage: abyss-pe [OPTION]... [PARAMETER=VALUE]... [COMMAND]...
+> Assemble reads into contigs and scaffolds. ABySS is a de novo sequence assembler intended for short paired-end reads and large genomes. See the abyss-pe man page for documentation of assembly parameters and commands. abyss-pe is a Makefile script, and so options of `make` may also be used with abyss-pe. See the `make` man page for documentation. (Command help argument)
+> ABySS is a de novo, parallel, paired-end sequence assembler that is designed for short reads. The single-processor version is useful for assembling genomes up to 100 Mbases in size. The parallel version is implemented using MPI and is capable of assembling larger genomes. [Official Page](http://www.bcgsc.ca/platform/bioinfo/software/abyss)
+
+# 4.1. Installation
+```sh
+    $ sudo apt-get install abyss
+```
+
+# 4.1. Using it
+
+```sh
+    $ mkdir abyss
+    $ cd abyss/
+    $ abyss-pe k=31 l=1 n=5 s=100 np=8 \
+          name=Rhodo \
+          lib='reads' \
+          reads='../Rhodo_Hiseq_read1.fastq ../Rhodo_Hiseq_read2.fastq' \
+          aligner=bowtie
 ```
