@@ -187,13 +187,15 @@ On Ubuntu, install using apt-get:
 velveth generates the files that the assembler, velvetg, needs. 
 ```sh
     $ velveth <output_folder> hash_length [[-file_format][-read_type] <input files>
-    $ velvetg <output_folder>
+    $ velvetg <output_folder> [options]
 ```
 The most important parameter is the hash-length for the heuristics. In this data, bigger meant less contigs. The maximum is 31.
 
 ```sh
     $ velveth velvet/ 31 -shortPaired -fastq -separate Rhodo_Hiseq_read1.fastq Rhodo_Hiseq_read2.fastq
-    $ velvetg velvet/
+    $ velvetg velvet/ -cov_cutoff auto
     $ more velvet/contigs.fa
 ```
-With hash-length 21, the commands above created 225000 contigs. With 27, 60800. Finally, with 31, we achieved 36675 contigs.
+With hash-length 21, the commands above created 225000 contigs. With 27, 60800. Finally, with hash_length 31 and -cov_cutoff, we achieved 11200 contigs.
+
+Coverage Cutoff is used to cut out of the results any small contig which is likely to be an error. The auto value is for velvet to choose this cutoff value.
