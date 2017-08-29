@@ -1,12 +1,12 @@
-#Bioinformatics Arsenal
+# Bioinformatics Arsenal
 My personal collection of references for Data Science and Bioinformatics
 Tutorials for:
 
-#Python Libraries
+# Python Libraries
 - [Pandas DataFrames](Pandas.md)
 
-#Bioinformatics
+# Bioinformatics
 
-##Sequence Assembly
+## Sequence Assembly
 
 - [De Novo Assembly Tutorial](DeNovoAssembly.md)
