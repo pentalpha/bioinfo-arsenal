@@ -22,7 +22,7 @@ Overview of the tools we are gonna use here:
 
 > ADSP: Alzheimer's Disease Sequencing Project
 
-#1. prefetch
+# 1. prefetch
 [Official Reference](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=prefetch)
 A tool from the NCBI's SRA Toolkit. It allows command-line downloading of SRA, dbGaP, and ADSP data.
 To install the whole sra-toolkit:
@@ -51,7 +51,7 @@ In this example, we will download the SRR522243 and ......245 SRA data:
 ### 1.3.1. SRR552224X
 > Change accession... Illumina whole genome shotgun sequencing of genomic DNA paired-end library 'Solexa-42867' containing sample Rhodobacter LW1. [URL](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=run_browser&run=SRR522243)
 
-###1.3.2. Downloading the data
+### 1.3.2. Downloading the data
 ```sh
     $ prefetch SRR522243
     $ prefetch SRR522245
