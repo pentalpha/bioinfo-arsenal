@@ -4,26 +4,18 @@
 
 > The problem of sequence assembly can be compared to taking many copies of a book, passing each of them through a shredder with a different cutter, and piecing the text of the book back together just by looking at the shredded pieces. (Wikipedia again)
 
-# A Pipeline For De Novo Sequence Assembly
+# A Guide For DeNovo Sequence Assembly
 
 Overview of the tools we are gonna use here:
 
 1. prefetch 
 2. fastq-dump  
-3. spades
-4. abyss
-5. SOAPdenovo
-6. MaSuRCA
+3. Option A: spades
+4. Option B: abyss
+5. Option C: Velvet
+6. Option D: 
 7. redundans
 8. quast
-
-# SRA, dbGaP, and ADSP data
-
-> Sequence Read Archive (SRA) makes biological sequence data available to the research community to enhance reproducibility and allow for new discoveries by comparing data sets. The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms, including... (NCBI)
-
-> The database of Genotypes and Phenotypes (dbGaP) was developed to archive and distribute the data and results from studies that have investigated the interaction of genotype and phenotype in Humans. (NCBI)
-
-> ADSP: Alzheimer's Disease Sequencing Project
 
 # 1. prefetch
 
@@ -190,6 +182,8 @@ velveth generates the files that the assembler, velvetg, needs.
     $ velvetg <output_folder> [options]
 ```
 The most important parameter is the hash-length for the heuristics. In this data, bigger meant less contigs. The maximum is 31.
+
+> As is often the case, it’s a tradeoff between specificity and sensitivity. Longer kmers bring you more specificity (i.e. less spurious overlaps) but lowers coverage (cf. below). . . so there’s a sweet spot to be found with time and experience. Experience shows that kmer coverage should be above 10 to start getting decent results. If Ck is above 20, you might be “wasting” coverage. Experience also shows that empirical tests with different values for k are not that costly to run! (User Manual, section 5.2)
 
 ```sh
     $ velveth velvet/ 31 -shortPaired -fastq -separate Rhodo_Hiseq_read1.fastq Rhodo_Hiseq_read2.fastq

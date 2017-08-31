@@ -18,6 +18,20 @@ df = pd.read_csv(filePath, sep=separatorChar)
 ```py
 df.to_csv(filePath, sep=separatorChar, index=writeUselessNewIndexesOnFileAndMakeAHugeMess)
 ```
+# Create a new empty DataFrame and then fill it with new data
+```py
+rows = []
+for index in indexes:
+    row = dict()
+    row['indexName'] = index
+    row['dataAboutIndex] = getDataFrom(index)
+    # etc, etc
+    rows.append(row)
+df = pd.DataFrame(rows)
+#and for columns with an specific order:
+df = pd.DataFrame(rows, columns['indexName', 'dataAboutIndex'])
+```
+
 # Utilities:
 Some essential tricks for DataFrames
 
@@ -50,4 +64,11 @@ df.drop('columnX', axis=1, inplace=True)
 ## Drop rows which are not included in a set of indexes
 ```py
 df_sliced = df.take(list(indexes_to_keep))
+```
+## Create a column with the mean value of other columns
+```py
+df['median'] = df[np.array(list(columnsSet))].median(axis=1)
+# or
+df['median'] = df.median(axis=1)
+# also workds for .mean() and .quantile(x)
 ```
