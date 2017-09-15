@@ -8,12 +8,12 @@
 
 Overview of the tools we are gonna use here:
 
-1. [prefetch](DeNovoAssembly.md#) 
-2. [fastq-dump](DeNovoAssembly.md#)  
-3. [Option A: spades](DeNovoAssembly.md#)
-4. [Option B: abyss](DeNovoAssembly.md#)
-5. [Option C: Velvet](DeNovoAssembly.md#)
-6. [Analysing results](DeNovoAssembly.md#)
+1. [prefetch](DeNovoAssembly.md#1-prefetch) 
+2. [fastq-dump](DeNovoAssembly.md#2-fastq-dump)  
+3. [Option A: spades](DeNovoAssembly.md#3-option-a-spades)
+4. [Option B: abyss](DeNovoAssembly.md#4-option-b-abyss)
+5. [Option C: Velvet](DeNovoAssembly.md#5-option-c-velvet)
+6. [Analysing results](DeNovoAssembly.md#6-analysing-the-results)
 
 # 1. prefetch
 
