@@ -16,43 +16,21 @@ Overview of the tools we are gonna use here:
 6. [Analysing results](DeNovoAssembly.md#)
 
 # 1. prefetch
-
-[Official Reference](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=toolkit_doc&f=prefetch)
-
-A tool from the NCBI's SRA Toolkit. It allows command-line downloading of SRA, dbGaP, and ADSP data.
-
-To install the whole sra-toolkit:
+To install along with the whole sra-toolkit:
 
 ```sh
     $ sudo apt-get install sra-toolkit
 ```
 
-## 1.1. SRA, dbGaP, and ADSP data
-> Sequence Read Archive (SRA) makes biological sequence data available to the research community to enhance reproducibility and allow for new discoveries by comparing data sets. The SRA stores raw sequencing data and alignment information from high-throughput sequencing platforms, including... (NCBI)
-
-> The database of Genotypes and Phenotypes (dbGaP) was developed to archive and distribute the data and results from studies that have investigated the interaction of genotype and phenotype in Humans. (NCBI)
-
-> ADSP: Alzheimer's Disease Sequencing Project.
-
-## 1.2. Default usage
-
-Usage:
-
-```sh
-    $ prefetch [options] <path/SRA file | path/kart file> [<path/file> ...]
-    $ prefetch [options] <SRA accession>
-    $ prefetch [options] --list <kart_file>
-```
-
-## 1.3. Applycation
+## 1.1. Applycation
 
 In this example, we will download the SRR522243 and ......245 SRA data:
 
-### 1.3.1. SRR552224X
+### 1.1.1. SRR552224X
 
 > Illumina whole genome shotgun sequencing of genomic DNA paired-end library 'Solexa-42867' containing sample Rhodobacter LW1. [URL](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=run_browser&run=SRR522243)
 
-### 1.3.2. Downloading the data
+### 1.1.2. Downloading the data
 
 ```sh
     $ prefetch SRR522243
@@ -60,9 +38,9 @@ In this example, we will download the SRR522243 and ......245 SRA data:
 ```
 The files are not downloaded to the current directory. Where are they? I have no idea.
 
-# 2. fastq-dump
+[For more info](prefatch.md)
 
-> NCBI’s fastq-dump has to be one of the worst-documented programs available online. The default parameters for fastq-dump are also ridiculous and certainly not what you want to use. They also have absolutely required parameters mixed in with totally optional parameters, and so you have no idea what is required and what is optional. [A, very angry with the original docs, overview of fastq-dump](https://edwards.sdsu.edu/research/fastq-dump/)
+# 2. fastq-dump
 
 Basically, it is one of the '*-dump' utilities in sra-toolkit that converts SRA data to other formats.
 ```sh
@@ -83,19 +61,15 @@ Uniting the pair fastq's in a single file:
     $ mv *_[12].fastq raw/
 ```
 
-Why not just omit the --split-files and have one file, to begin with? I Also have no idea. #TODO
-
 That will leave us with the files:
 Rhodo_Hiseq_read1.fastq  Rhodo_Hiseq_read2.fastq
+
+[For more info](fastq-dump.md)
 
 # 3. Option A: spades
 
 Spades is a russian genome assembler writen in Python. He takes the raw fastq data and generates assembled .fasta files.
 [Official Webpage](http://cab.spbu.ru/software/spades/)
-
-> SPAdes (St. Petersburg genome assembler)[1] is a genome assembly algorithm which was designed for single cell and multi-cells bacterial data sets. However, it might not be suitable for large genomes projects.  (Wikipedia)
-
-Its made for facterial data sets. Not indicated for large genomes.
 
 ## 3.1 Instalation
 ```sh
@@ -108,37 +82,11 @@ Its made for facterial data sets. Not indicated for large genomes.
     $ spades.py -t 8 --pe1-1 Rhodo_Hiseq_read1.fastq --pe1-2 Rhodo_Hiseq_read2.fastq -o SpadesOut
 ```
 
-This will create the directory:
-```sh
-    SpadesOut/
-    ├── corrected
-    │   └── configs
-    ├── K21
-    │   └── configs
-    │       ├── datasets
-    │       └── datasets_archive
-    ├── K33
-    │   └── configs
-    │       ├── datasets
-    │       └── datasets_archive
-    ├── K55
-    │   ├── configs
-    │   │   ├── datasets
-    │   │   └── datasets_archive
-    │   └── path_extend
-    ├── misc
-    └── tmp
-    (17 directories)
-```
-
 Created around 3100 contigs
 
+[For more info](spades.md)
+
 # 4. Option B: abyss
-> Usage: abyss-pe [OPTION]... [PARAMETER=VALUE]... [COMMAND]...
-
-> Assemble reads into contigs and scaffolds. ABySS is a de novo sequence assembler intended for short paired-end reads and large genomes. See the abyss-pe man page for documentation of assembly parameters and commands. abyss-pe is a Makefile script, and so options of `make` may also be used with abyss-pe. See the `make` man page for documentation. (Command help argument)
-
-> ABySS is a de novo, parallel, paired-end sequence assembler that is designed for short reads. The single-processor version is useful for assembling genomes up to 100 Mbases in size. The parallel version is implemented using MPI and is capable of assembling larger genomes. [Official Page](http://www.bcgsc.ca/platform/bioinfo/software/abyss)
 
 ## 4.1. Installation
 ```sh
@@ -157,17 +105,6 @@ Created around 3100 contigs
           aligner=bowtie
 ```
 
-## 4.3. CLI Args
-- k: "size of k-mer (when K is not set) or the span of a k-mer pair (when K is set)"; Instructions to find an optimal k value are provided at the project's [README](https://github.com/bcgsc/abyss#optimizing-the-parameter-k). Please read the section on k-mer values [here](Kmer.md);
-
-- np: Number of processes to use;
-
-- l: minimum alignment length of a read (bp, default=40);
-
-- n: minimum number of pairs required for building contigs (default=10);
-
-- s: minimum [unitig](https://github.com/mcveanlab/mccortex/wiki/unitig) size required for building contigs (bp, default=1000);
-
 ## 4.4. Aftermath
 From Rhodo-stats.html:
 
@@ -181,12 +118,10 @@ n   n:500   L50     min     N80     N50     N20     E-size  max     sum     name
 
 [For information on scaffolds](https://genome.jgi.doe.gov/help/scaffolds.jsf)
 
+[For more info](abyss.md)
+
 # 5. Option C: Velvet
 Sequence assembler for very short reads.
-
-> Velvet is an algorithm package that has been designed to deal with de novo genome assembly and short read sequencing alignments. This is achieved through the manipulation of de Bruijn graphs for genomic sequence assembly via the removal of errors and the simplification of repeated regions.[2] Velvet has also been implemented inside of commercial packages, such as Sequencher, Geneious, MacVector and BioNumerics. (Wikipedia)
-
-[User Manual](http://www.ebi.ac.uk/~zerbino/velvet/Manual.pdf)
 
 ## 5.1. Installation
 
@@ -196,23 +131,12 @@ On Ubuntu, install using apt-get:
 ```
 ## 5.2. Using it
 
-velveth generates the files that the assembler, velvetg, needs. 
-```sh
-    $ velveth <output_folder> hash_length [[-file_format][-read_type] <input files>
-    $ velvetg <output_folder> [options]
-```
-The most important parameter is the hash-length for the heuristics. In this data, bigger meant less contigs. The maximum is 31.
-
-> As is often the case, it’s a tradeoff between specificity and sensitivity. Longer kmers bring you more specificity (i.e. less spurious overlaps) but lowers coverage (cf. below). . . so there’s a sweet spot to be found with time and experience. Experience shows that kmer coverage should be above 10 to start getting decent results. If Ck is above 20, you might be “wasting” coverage. Experience also shows that empirical tests with different values for k are not that costly to run! (User Manual, section 5.2)
-
 ```sh
     $ velveth velvet/ 31 -shortPaired -fastq -separate Rhodo_Hiseq_read1.fastq Rhodo_Hiseq_read2.fastq
     $ velvetg velvet/ -cov_cutoff auto
     $ more velvet/contigs.fa
 ```
 With hash-length 21, the commands above created 225000 contigs. With 27, 60800. Finally, with hash_length 31 and -cov_cutoff auto, we achieved 11200 contigs.
-
-Coverage Cutoff is used to cut out of the results any small contig which is likely to be an error. The auto value is for velvet to choose this cutoff value.
 
 Using additional parameters:
 ```sh
@@ -221,10 +145,7 @@ Using additional parameters:
 ```
 Now, with the -exp_cov parameter, velvetg proceded to scaffolding the resulting contigs. The coverage cutoff 6 removed contigs with less than 6x.
 
-## 5.3. More tutorials
-
-- [Evomics, Learning, Assembly and Alignment](http://evomics.org/learning/assembly-and-alignment/velvet/);
-- [Using the Velvet de novo assembler for short-read sequencing technologies, Daniel R. Zerbino](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2952100/);
+[For more info](velvet.md)
 
 # 6. Analysing the results
 Copy everything to a single directory:
@@ -244,6 +165,8 @@ Download from [sourceforge](http://quast.sourceforge.net/quast).
     $ quast.py -o quast_genomes/ genomes/*
     $ xdg-open quast_genomes/icarus.html
 ```
+
+[For more info](quast.md)
 
 # Closing gaps: 
 not yet
