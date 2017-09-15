@@ -8,14 +8,12 @@
 
 Overview of the tools we are gonna use here:
 
-1. prefetch 
-2. fastq-dump  
-3. Option A: spades
-4. Option B: abyss
-5. Option C: Velvet
-6. Option D: 
-7. redundans
-8. quast
+1. [prefetch](DeNovoAssembly.md#) 
+2. [fastq-dump](DeNovoAssembly.md#)  
+3. [Option A: spades](DeNovoAssembly.md#)
+4. [Option B: abyss](DeNovoAssembly.md#)
+5. [Option C: Velvet](DeNovoAssembly.md#)
+6. [Analysing results](DeNovoAssembly.md#)
 
 # 1. prefetch
 
@@ -67,12 +65,10 @@ The files are not downloaded to the current directory. Where are they? I have no
 > NCBI’s fastq-dump has to be one of the worst-documented programs available online. The default parameters for fastq-dump are also ridiculous and certainly not what you want to use. They also have absolutely required parameters mixed in with totally optional parameters, and so you have no idea what is required and what is optional. [A, very angry with the original docs, overview of fastq-dump](https://edwards.sdsu.edu/research/fastq-dump/)
 
 Basically, it is one of the '*-dump' utilities in sra-toolkit that converts SRA data to other formats.
-
 ```sh
     $ fastq-dump --split-files SRR522243
     $ fastq-dump --split-files SRR522245
 ```
-
 It will create the following .fastq files on the current directory:
 SRR522243_2.fastq  SRR522245_2.fastq
 SRR522243_1.fastq  SRR522245_1.fastq
@@ -144,12 +140,12 @@ Created around 3100 contigs
 
 > ABySS is a de novo, parallel, paired-end sequence assembler that is designed for short reads. The single-processor version is useful for assembling genomes up to 100 Mbases in size. The parallel version is implemented using MPI and is capable of assembling larger genomes. [Official Page](http://www.bcgsc.ca/platform/bioinfo/software/abyss)
 
-# 4.1. Installation
+## 4.1. Installation
 ```sh
     $ sudo apt-get install abyss
 ```
 
-# 4.2. Using it
+## 4.2. Using it
 
 ```sh
     $ mkdir abyss
@@ -161,6 +157,30 @@ Created around 3100 contigs
           aligner=bowtie
 ```
 
+## 4.3. CLI Args
+- k: "size of k-mer (when K is not set) or the span of a k-mer pair (when K is set)"; Instructions to find an optimal k value are provided at the project's [README](https://github.com/bcgsc/abyss#optimizing-the-parameter-k). Please read the section on k-mer values [here](Kmer.md);
+
+- np: Number of processes to use;
+
+- l: minimum alignment length of a read (bp, default=40);
+
+- n: minimum number of pairs required for building contigs (default=10);
+
+- s: minimum [unitig](https://github.com/mcveanlab/mccortex/wiki/unitig) size required for building contigs (bp, default=1000);
+
+## 4.4. Aftermath
+From Rhodo-stats.html:
+
+n   n:500   L50     min     N80     N50     N20     E-size  max     sum     name
+
+17918   1183    424     500     594     796     1177    943     4677    943532  Rhodo-unitigs.fa
+
+17722   1220    430     500     609     843     1232    977     4677    1009253     Rhodo-contigs.fa
+
+17634   1136    346     500     609     843     1911    1509    10908   1009260     Rhodo-scaffolds.fa
+
+[For information on scaffolds](https://genome.jgi.doe.gov/help/scaffolds.jsf)
+
 # 5. Option C: Velvet
 Sequence assembler for very short reads.
 
@@ -168,13 +188,13 @@ Sequence assembler for very short reads.
 
 [User Manual](http://www.ebi.ac.uk/~zerbino/velvet/Manual.pdf)
 
-# 5.1. Installation
+## 5.1. Installation
 
 On Ubuntu, install using apt-get:
 ```sh
     $ sudo apt-get install velvet
 ```
-# 5.2. Using it
+## 5.2. Using it
 
 velveth generates the files that the assembler, velvetg, needs. 
 ```sh
@@ -190,6 +210,40 @@ The most important parameter is the hash-length for the heuristics. In this data
     $ velvetg velvet/ -cov_cutoff auto
     $ more velvet/contigs.fa
 ```
-With hash-length 21, the commands above created 225000 contigs. With 27, 60800. Finally, with hash_length 31 and -cov_cutoff, we achieved 11200 contigs.
+With hash-length 21, the commands above created 225000 contigs. With 27, 60800. Finally, with hash_length 31 and -cov_cutoff auto, we achieved 11200 contigs.
 
 Coverage Cutoff is used to cut out of the results any small contig which is likely to be an error. The auto value is for velvet to choose this cutoff value.
+
+Using additional parameters:
+```sh
+    $ velvetg velvet/ -cov_cutoff 6 -exp_cov auto
+        Final graph has 10172 nodes and n50 of 7045, max 26197, total 1448145, using 645018/1979216 reads
+```
+Now, with the -exp_cov parameter, velvetg proceded to scaffolding the resulting contigs. The coverage cutoff 6 removed contigs with less than 6x.
+
+## 5.3. More tutorials
+
+- [Evomics, Learning, Assembly and Alignment](http://evomics.org/learning/assembly-and-alignment/velvet/);
+- [Using the Velvet de novo assembler for short-read sequencing technologies, Daniel R. Zerbino](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2952100/);
+
+# 6. Analysing the results
+Copy everything to a single directory:
+```sh
+    $ mkdir genomes
+    $ cp SpadesOut/scaffolds.fasta genomes/spades.sc.fa
+    $ cp abyss/Rhodo-scaffolds.fa genomes/abyss.sc.fa
+    $ cp velvet/contigs.fa genomes/velvet.sc.fa
+```
+
+## 6.1. Quast.py
+> QUAST-a quality assessment tool for evaluating and comparing genome assemblies. This tool improves on leading assembly comparison software with new ideas and quality metrics. QUAST can evaluate assemblies both with a reference genome, as well as without a reference. QUAST produces many reports, summary tables and plots to help scientists in their research and in their publications. [QUAST: quality assessment tool for genome assemblies](https://www.ncbi.nlm.nih.gov/pubmed/23422339);
+
+Download from [sourceforge](http://quast.sourceforge.net/quast).
+
+```sh
+    $ quast.py -o quast_genomes/ genomes/*
+    $ xdg-open quast_genomes/icarus.html
+```
+
+# Closing gaps: 
+not yet
