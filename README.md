@@ -9,7 +9,7 @@ My personal collection of references for Data Science and Bioinformatics
 # Tutorials
 
 ## Bioinformatics
-- [De Novo Assembly Tutorial](DeNovoAssembly.md)
+- [De Novo Assembly Tutorial](DeNovoAssembly.md) ([Versão pt-br](MontagemNGS.md))
 
 # Libraries
 

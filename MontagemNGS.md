@@ -16,7 +16,7 @@ As principais ferramentas que vamos utilizar aqui:
 4. [Option B: abyss](MontagemNGS.md#4-option-b-abyss)
 5. [Option C: SOAPdenovo](MontagemNGS.md#5-option-c-SOAPdenovo)
 5. [Option C: Velvet](MontagemNGS.md#6-option-d-velvet)
-6. [quast: Analysing results](MontagemNGS.md#6-analysing-the-results)
+6. [Quast e Redundans: Analizando e melhorando os resultados](MontagemNGS.md#7-quast-e-redundans)
 
 Antes de prosseguir, abra um terminal para uma máquina Linux e entre na sua pasta pessoal. Então, crie uma pasta chamada "ngs-assembly" para guardar os arquivos gerados nesta tarefa.
 
@@ -132,6 +132,8 @@ Caso ainda não esteja instalado:
 
 É possível que ocorram problemas no MPI caso você esteja tentando usar paralelismo. Caso isso aconteça, tire o "np=8".
 
+Foram produzidos 19998 contigs (Rhodo-contigs.fa) e 19842 scaffolds (Rhodo-scaffolds.fa).
+
 [For more info on abyss](abyss.md)
 
 # 5. Option C: SOAPdenovo
@@ -165,7 +167,7 @@ q1=../Rhodo_Hiseq_read1.fastq
 q2=../Rhodo_Hiseq_read2.fastq
 ```
 
-O comando vai demorar cerca de 2 minutos, produzindo 3408 scaffolds () e 3426 contigs ().
+O comando vai demorar cerca de 2 minutos, produzindo 3408 scaffolds (Rhodo.scafSeq) e 3426 contigs (Rhodo.contig).
 
 # 6. Option D: Velvet
 Sequence assembler for very short reads.
@@ -188,14 +190,14 @@ Usar o velvet consiste de 2 passos: velveth para fazer o "hashing" dos reads e v
 
 [For more info](velvet.md)
 
-# 7. Analizando os resultados e fazendo melhoramentos
+# 7. Quast e Redundans
 Copie tudo para um diretório só:
 ```sh
     $ mkdir genomes/
-     cp soap/Rhodo.scafSeq genomes/soap.scaff.fasta
-     cp SpadesOut/scaffolds.fasta genomes/spades.scaff.fasta
-     cp abyss/Rhodo-scaffolds.fa genomes/abyss.scaff.fasta
-     cp velvet/contigs.fa genomes/velvet.contig.fasta
+    $ cp soap/Rhodo.scafSeq genomes/soap.scaff.fasta
+    $ cp SpadesOut/scaffolds.fasta genomes/spades.scaff.fasta
+    $ cp abyss/Rhodo-scaffolds.fa genomes/abyss.scaff.fasta
+    $ cp velvet/contigs.fa genomes/velvet.contig.fasta
 ```
 
 ## 7.1. Quast.py
@@ -205,9 +207,41 @@ Você pode baixar a partir da [sourceforge](http://quast.sourceforge.net/quast).
 
 ```sh
     $ quast.py -o quast_genomes/ genomes/*
+    $ cd quast_genomes
+    $ cat report.txt
 ```
+
+Ele vai gerar "reports" em diversos formatos (html, tsv, txt...). Inclusive é gerada uma página do icarus, que pode ser aberta usando um web-browser.
 
 [For more info](quast.md)
 
-## 7.2. redundans.py: 
-not yet
+## 7.2. redundans.py:
+O redundans.py é uma pipeline para fechar gaps e reduzir a redundância dos contigs de uma montagem.
+
+> Program takes as input assembled contigs, sequencing libraries and/or reference sequence and returns scaffolded homozygous genome assembly. Final assembly should be less fragmented and with total size smaller than the input contigs. In addition, Redundans will automatically close the gaps resulting from genome assembly or scaffolding. ([Github](https://github.com/lpryszcz/redundans))
+
+Hora de executar ele para cada uma das nossas montagens:
+
+```sh
+    $ redundans.py -v -i ../*.fastq -f abyss.scaff.fasta -o abyss.gap -t 8
+    $ redundans.py -v -i ../*.fastq -f spades.scaff.fasta -o spades.gap -t 8
+    $ redundans.py -v -i ../*.fastq -f soap.scaff.fasta -o soap.gap -t 8
+    $ redundans.py -v -i ../*.fastq -f velvet.contig.fasta -o velvet.gap -t 8
+```
+
+Ao final da execução, o redundans.py exibe uma pequena tabela com estatísticas (semelhante às do quast) sobre as sequências do arquivo de entrada e de cada arquivo gerado. Leia ela para ver o quanto cada montagem melhorou depois de passar pelo redundans.py.
+
+Agora, vamos copiar os scaffolds produzidos pelo redundans.py para uma pasta propria e excluir os outros arquivos gerados:
+
+```sh
+    $ mkdir final_scaffolds
+    $ mv abyss.gap/_gapcloser.1.2.fa final_scaffolds/abyss.fasta
+    $ mv soap.gap/_gapcloser.1.2.fa final_scaffolds/soap.fasta
+    $ mv spades.gap/_gapcloser.1.2.fa final_scaffolds/spades.fasta
+    $ mv velvet.gap/_gapcloser.1.2.fa final_scaffolds/velvet.fasta
+    $ rm -Rf *.gap/
+    $ rm *.fai
+```
+PS: O resultado "oficial" é o *.gap/scaffolds.filled.fa, porém ele é um symlink para o arquivo _gapcloser.1.2.fa, por isso escrevi comandos para copiar o arquivo do _gapcloser, senão poderiam acontecer problemas depois de excluir os arquivos originais.
+
+Agora, tente rodar o quast.py com os novos resultados em "final_scaffolds" e decida qual foi o melhor!
