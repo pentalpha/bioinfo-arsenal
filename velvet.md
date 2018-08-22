@@ -18,7 +18,7 @@ velveth generates the files that the assembler, velvetg, needs.
     $ velveth <output_folder> hash_length [[-file_format][-read_type] <input files>
     $ velvetg <output_folder> [options]
 ```
-The most important parameter is the hash-length for the heuristics. In this data, bigger meant less contigs. The maximum is 31.
+One of the most important parameters is the hash-length (kmer) for the heuristics. In this data, bigger meant less contigs. The maximum is 31.
 
 > As is often the case, it’s a tradeoff between specificity and sensitivity. Longer kmers bring you more specificity (i.e. less spurious overlaps) but lowers coverage (cf. below). . . so there’s a sweet spot to be found with time and experience. Experience shows that kmer coverage should be above 10 to start getting decent results. If Ck is above 20, you might be “wasting” coverage. Experience also shows that empirical tests with different values for k are not that costly to run! (User Manual, section 5.2)
 
