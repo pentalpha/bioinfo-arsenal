@@ -34,14 +34,5 @@
 - s: minimum [unitig](https://github.com/mcveanlab/mccortex/wiki/unitig) size required for building contigs (bp, default=1000);
 
 ## Aftermath
-From Rhodo-stats.html:
-
-n   n:500   L50     min     N80     N50     N20     E-size  max     sum     name
-
-17918   1183    424     500     594     796     1177    943     4677    943532  Rhodo-unitigs.fa
-
-17722   1220    430     500     609     843     1232    977     4677    1009253     Rhodo-contigs.fa
-
-17634   1136    346     500     609     843     1911    1509    10908   1009260     Rhodo-scaffolds.fa
 
 [For information on scaffolds](https://genome.jgi.doe.gov/help/scaffolds.jsf)

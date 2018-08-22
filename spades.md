@@ -3,7 +3,7 @@
 Spades is a russian genome assembler writen in Python. He takes the raw fastq data and generates assembled .fasta files.
 [Official Webpage](http://cab.spbu.ru/software/spades/)
 
-> SPAdes (St. Petersburg genome assembler)[1] is a genome assembly algorithm which was designed for single cell and multi-cells bacterial data sets. However, it might not be suitable for large genomes projects.  (Wikipedia)
+> SPAdes (St. Petersburg genome assembler)[1] is a genome assembly algorithm which was designed for single cell and multi-cells bacterial data sets. However, it might not be suitable for large genome projects.  (Wikipedia)
 
 Its made for facterial data sets. Not indicated for large genomes.
 

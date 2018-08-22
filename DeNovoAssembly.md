@@ -15,6 +15,8 @@ Overview of the tools we are gonna use here:
 5. [Option C: Velvet](DeNovoAssembly.md#5-option-c-velvet)
 6. [Analysing results](DeNovoAssembly.md#6-analysing-the-results)
 
+Before anything else, 
+
 # 1. prefetch
 To install along with the whole sra-toolkit:
 
@@ -36,7 +38,7 @@ In this example, we will download the SRR522243 and ......245 SRA data:
     $ prefetch SRR522243
     $ prefetch SRR522245
 ```
-The files are not downloaded to the current directory. Where are they? I have no idea.
+The files are not downloaded to the current directory. You need to retrieve them with fastq-dump.
 
 [For more info](prefatch.md)
 
