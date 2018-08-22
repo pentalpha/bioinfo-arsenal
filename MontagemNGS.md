@@ -145,10 +145,12 @@ Foram produzidos 19998 contigs (Rhodo-contigs.fa) e 19842 scaffolds (Rhodo-scaff
 ## 5.2. Using it
 
 Primeiramente, para configurar a montagem, escreva um arquivo chamado "soap.config":
+
 ```sh
     $ mkdir soap
     $ cd soap
     $ nano soap.config
+    $ SOAPdenovo-63mer all -s soap.config -o Rhodo -F -R -E -w -u -K 55 -p 8 >> SOAPdenovo.log
 ```
 
 O conteúdo é o seguinte:
